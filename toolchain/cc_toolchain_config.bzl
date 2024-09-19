@@ -176,13 +176,16 @@ def cc_toolchain_config(
     cxx_standard = compiler_configuration["cxx_standard"]
     stdlib = compiler_configuration["stdlib"]
     if stdlib == "builtin-libc++" and is_xcompile and not target_os == "darwin":
+        print("Using stdlib.1: stdc++")
         stdlib = "stdc++"
     if stdlib == "builtin-libc++":
+        print("Using stdlib.2: libc++")
         cxx_flags = [
             "-std=" + cxx_standard,
             "-stdlib=libc++",
         ]
         if use_lld:
+            print("Using stdlib.3: libc++")
             # For single-platform builds, we can statically link the bundled
             # libraries.
             link_flags.extend([
@@ -196,6 +199,7 @@ def cc_toolchain_config(
                 "-ldl",
             ])
         else:
+            print("Using stdlib.4: libc++")
             # The only known mechanism to static link libraries in ld64 is to
             # not have the corresponding .dylib files in the library search
             # path. The link time sandbox does not include the .dylib files, so
@@ -223,6 +227,7 @@ def cc_toolchain_config(
                 "-L{}lib".format(toolchain_path_prefix),
             ])
     elif stdlib == "libc++":
+        print("Using stdlib.5: libc++")
         cxx_flags = [
             "-std=" + cxx_standard,
             "-stdlib=libc++",
@@ -233,6 +238,7 @@ def cc_toolchain_config(
             "-l:c++abi.a",
         ])
     elif stdlib == "stdc++":
+        print("Using stdlib.6: stdc++")
         cxx_flags = [
             "-std=" + cxx_standard,
             "-stdlib=libstdc++",
@@ -242,6 +248,7 @@ def cc_toolchain_config(
             "-l:libstdc++.a",
         ])
     elif stdlib == "none":
+        print("Using stdlib.7: none")
         cxx_flags = [
             "-nostdlib",
         ]
